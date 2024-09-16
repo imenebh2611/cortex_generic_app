@@ -1,0 +1,12 @@
+definition_version: "1.1"
+streamlit:
+  name: genericdevapptest
+  stage: RAW_DATA
+  query_warehouse: cortex_analyst_wh
+  main_file: home.py
+  env_file: environment.yml
+  pages_dir: pages/
+  additional_source_files:
+    - pages/analyst_winter_game.py
+    - pages/analyst_st_gobain.py
+    - pages/monitoring.py

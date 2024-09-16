@@ -1,0 +1,187 @@
+description: Host City of the Winter Olympic Games (e.g., Cortina d'Ampezzo, Squaw Valley)
+name: winter_game
+tables:
+- base_table:
+    database: CORTEX_ANALYST_DEMO
+    schema: WINTER_GAME
+    table: WINTER_OLYMPIC_MEDALS
+  columns: []
+  description: 'Winter Olympic Medals Table: This table stores information about the
+    number of gold, silver, and bronze medals won by each country at each Winter Olympic
+    Games, including the year, host country, host city, country name, and country
+    code.'
+  dimensions:
+  - cortex_search_service_name: ''
+    data_type: TEXT
+    description: Host Country of the Winter Olympic Games
+    expr: HOST_COUNTRY
+    name: HOST_COUNTRY
+    sample_values:
+    - France
+    - Switzerland
+    - United States
+    - Germany
+    - Norway
+    - Italy
+    - Austria
+    - Japan
+    - Yugoslavia
+    - Russia
+    - South Korea
+    - Canada
+    synonyms:
+    - Country
+  - cortex_search_service_name: ''
+    data_type: TEXT
+    description: Host City of the Winter Olympic Games
+    expr: HOST_CITY
+    name: HOST_CITY
+    sample_values:
+    - Chamonix
+    - St. Moritz
+    - Lake Placid
+    - Garmisch-Partenkirchen
+    - Oslo
+    - Cortina d'Ampezzo
+    - Squaw Valley
+    - Innsbruck
+    - Grenoble
+    - Sapporo
+    - Sarajevo
+    - Calgary
+    - Nagano
+    - Albertville
+    - Salt Lake City
+    - Turin
+    - Vancouver
+    - Pyeongchang
+    - Lillehammer
+    - Sochi
+    synonyms:
+    - City
+  - cortex_search_service_name: ''
+    data_type: TEXT
+    description: Country names of Winter Olympic medal winners
+    expr: COUNTRY_NAME
+    name: COUNTRY_NAME
+    sample_values:
+    - United States
+    - Great Britain
+    - Austria
+    - Norway
+    - Finland
+    - France
+    - Belgium
+    - Switzerland
+    synonyms:
+    - Country
+  - cortex_search_service_name: ''
+    data_type: TEXT
+    description: Country codes for Winter Olympic medal winners
+    expr: COUNTRY_CODE
+    name: COUNTRY_CODE
+    sample_values:
+    - USA
+    - GBR
+    - AUT
+    synonyms:
+    - Code
+  - cortex_search_service_name: ''
+    data_type: TEXT
+    description: The discipline of the Winter Olympic Games (e.g., Alpine Skiing,
+      Ice Hockey, Figure Skating)
+    expr: SPORT
+    name: SPORT
+    sample_values:
+    - Alpine Skiing
+    - Ice Hockey
+    - Figure Skating
+    synonyms:
+    - Discipline
+  filters:
+  - description: Filter by country
+    expr: COUNTRY_NAME = 'United States'
+    name: Country Filter
+    synonyms:
+    - Country
+  measures:
+  - data_type: NUMBER
+    default_aggregation: max
+    description: Year of Winter Olympic Games
+    expr: YEAR
+    name: YEAR
+    sample_values:
+    - 1924
+    - 1928
+    - 1932
+    synonyms:
+    - Olympic Year
+  - data_type: NUMBER
+    default_aggregation: sum
+    description: Number of gold medals won by an athlete or country in the Winter
+      Olympic Games.
+    expr: GOLD
+    name: GOLD
+    sample_values:
+    - 1
+    - 2
+    - 4
+    synonyms:
+    - Gold Medals
+  - data_type: NUMBER
+    default_aggregation: sum
+    description: Number of silver medals won by athletes.
+    expr: SILVER
+    name: SILVER
+    sample_values:
+    - 2
+    - 1
+    - 7
+    synonyms:
+    - Silver Medals
+  - data_type: NUMBER
+    default_aggregation: sum
+    description: Number of bronze medals won by athletes.
+    expr: BRONZE
+    name: BRONZE
+    sample_values:
+    - 1
+    - 2
+    - 0
+    synonyms:
+    - Bronze Medals
+  - data_type: NUMBER
+    default_aggregation: sum
+    description: Total number of medals (Gold, Silver, Bronze) won by an athlete or
+      country.
+    expr: GOLD + SILVER + BRONZE
+    name: TOTAL_MEDALS
+    sample_values:
+    - 3
+    - 7
+    - 5
+    synonyms:
+    - Total Medals
+  name: WINTER_OLYMPIC_MEDALS
+  synonyms: []
+  time_dimensions: []
+verified_queries:
+  - name: "Total Medals by Country"
+    question: "How many total medals has each country won?"
+    verified_at: 1714497970
+    verified_by: Rassoul
+    sql: |
+      SELECT COUNTRY_NAME, SUM(GOLD + SILVER + BRONZE) AS TOTAL_MEDALS
+      FROM WINTER_OLYMPIC_MEDALS
+      GROUP BY COUNTRY_NAME
+      ORDER BY TOTAL_MEDALS DESC;
+  - name: "Medals per Year"
+    question: "How many medals did each country win in a given year?"
+    verified_at: 1714497970
+    verified_by: Rassoul
+    sql: |
+      SELECT YEAR, COUNTRY_NAME, SUM(GOLD) AS GOLD_MEDALS, SUM(SILVER) AS SILVER_MEDALS, 
+      SUM(BRONZE) AS BRONZE_MEDALS, SUM(GOLD + SILVER + BRONZE) AS TOTAL_MEDALS
+      FROM WINTER_OLYMPIC_MEDALS
+      GROUP BY YEAR, COUNTRY_NAME
+      ORDER BY YEAR, TOTAL_MEDALS DESC;
